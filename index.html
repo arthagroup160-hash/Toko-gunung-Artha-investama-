@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BORNEO365 — Mengejar Mimpi di Borneo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --hijau-tua:   #1A3A2A;
+    --hijau-mid:   #2D6A4F;
+    --hijau-muda:  #40916C;
+    --aksen:       #B7E4C7;
+    --kuning:      #F4A261;
+    --merah-muda:  #E76F51;
+    --putih:       #F8FBF9;
+    --abu:         #D8E8DF;
+    --teks:        #0D1F16;
+    --mono:        'IBM Plex Mono', monospace;
+    --sans:        'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--putih);
+    color: var(--teks);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--hijau-tua);
+    color: #fff;
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--kuning);
+  }
+  header .logo {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    color: var(--aksen);
+    line-height: 1;
+  }
+  header .sub {
+    font-size: 11px;
+    color: #a8c8b4;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+  header .hari-badge {
+    margin-left: auto;
+    background: var(--kuning);
+    color: var(--hijau-tua);
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── RINGKASAN SALDO ── */
+  .saldo-bar {
+    background: var(--hijau-mid);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+  }
+  .saldo-item {
+    padding: 12px 18px;
+    text-align: center;
+    background: var(--hijau-tua);
+  }
+  .saldo-item:nth-child(2) { background: #22503A; }
+  .saldo-item label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8fbfa0;
+    margin-bottom: 4px;
+  }
+  .saldo-item .nilai {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .saldo-item .nilai.positif { color: var(--aksen); }
+  .saldo-item .nilai.negatif { color: #f4a261; }
+
+  /* ── FORM TAMBAH ENTRI ── */
+  .form-section {
+    background: #fff;
+    border: 1.5px solid var(--abu);
+    border-radius: 10px;
+    margin: 18px 16px 0;
+    overflow: hidden;
+  }
+  .form-header {
+    background: var(--hijau-mid);
+    color: #fff;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-header span { font-size: 15px; }
+  .form-body {
+    padding: 14px 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-group.full { grid-column: 1 / -1; }
+  label.field-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--hijau-mid);
+    font-weight: 600;
+  }
+  input, select, textarea {
+    font-family: var(--sans);
+    font-size: 14px;
+    border: 1.5px solid var(--abu);
+    border-radius: 6px;
+    padding: 8px 10px;
+    background: var(--putih);
+    color: var(--teks);
+    outline: none;
+    transition: border-color .15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--hijau-muda);
+  }
+  textarea { resize: vertical; min-height: 60px; }
+
+  /* type warna */
+  .tipe-proyek   { border-left: 4px solid var(--hijau-muda) !important; }
+  .tipe-saprodi  { border-left: 4px solid var(--kuning) !important; }
+  .tipe-pribadi  { border-left: 4px solid var(--merah-muda) !important; }
+  .tipe-pemasukan { border-left: 4px solid #52b788 !important; }
+
+  .btn-tambah {
+    background: var(--hijau-mid);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background .15s;
+    margin-top: 4px;
+  }
+  .btn-tambah:hover { background: var(--hijau-tua); }
+
+  /* ── FILTER HARI ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    background: #fff;
+    border: 1.5px solid var(--abu);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    color: var(--hijau-mid);
+  }
+  .chip.aktif {
+    background: var(--hijau-mid);
+    border-color: var(--hijau-mid);
+    color: #fff;
+  }
+
+  /* ── TABEL LOG ── */
+  .tabel-wrap {
+    margin: 14px 16px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--abu);
+  }
+  .tabel-head {
+    background: var(--hijau-tua);
+    color: #fff;
+    display: grid;
+    grid-template-columns: 70px 1fr 110px 110px 110px 36px;
+    gap: 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .tabel-head div, .row-item > div {
+    padding: 9px 10px;
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+  .tabel-head div:last-child, .row-item > div:last-child { border-right: none; }
+
+  .tbody { background: #fff; }
+  .row-item {
+    display: grid;
+    grid-template-columns: 70px 1fr 110px 110px 110px 36px;
+    border-bottom: 1px solid var(--abu);
+    font-size: 13px;
+    align-items: start;
+  }
+  .row-item:last-child { border-bottom: none; }
+  .row-item .jenis-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .dot-proyek   { background: var(--hijau-muda); }
+  .dot-saprodi  { background: var(--kuning); }
+  .dot-pribadi  { background: var(--merah-muda); }
+  .dot-pemasukan { background: #52b788; }
+
+  .row-item .nominal {
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .nominal.keluar { color: #c0392b; }
+  .nominal.masuk  { color: #27ae60; }
+
+  .btn-hapus {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 8px 10px;
+    transition: color .15s;
+    line-height: 1;
+  }
+  .btn-hapus:hover { color: var(--merah-muda); }
+
+  .kosong {
+    text-align: center;
+    padding: 32px 16px;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  /* ── REKAPITULASI ── */
+  .rekap-section {
+    margin: 14px 16px 24px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--abu);
+  }
+  .rekap-header {
+    background: var(--hijau-tua);
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .rekap-body {
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background-color: var(--abu);
+  }
+  .rekap-cell {
+    background: #fff;
+    padding: 12px 14px;
+  }
+  .rekap-cell label {
+    display: block;
+    font-size: 11px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+  .rekap-cell .angka {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .saldo-akhir {
+    background: var(--hijau-tua);
+    color: #fff;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .saldo-akhir label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--aksen); }
+  .saldo-akhir .angka { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--kuning); }
+
+  /* ── EKSPORT ── */
+  .btn-export {
+    margin: 0 16px 8px;
+    background: var(--hijau-tua);
+    color: var(--aksen);
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    width: calc(100% - 32px);
+    transition: background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-export:hover { background: var(--hijau-mid); }
+
+  /* responsive tabel scroll */
+  @media (max-width: 600px) {
+    .tabel-wrap { overflow-x: auto; }
+    .tabel-head, .row-item {
+      min-width: 560px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo" style="font-size:20px;letter-spacing:-1px">BORNEO<span style="color:var(--kuning)">365</span></div>
+    <div class="sub">Mengejar Mimpi di Borneo • Kaltim</div>
+  </div>
+  <div class="hari-badge" id="badgeHari">Hari ke-1</div>
+</header>
+
+<!-- SALDO RINGKAS -->
+<div class="saldo-bar">
+  <div class="saldo-item">
+    <label>Total Pemasukan</label>
+    <div class="nilai positif" id="totalMasuk">Rp 0</div>
+  </div>
+  <div class="saldo-item">
+    <label>Total Pengeluaran</label>
+    <div class="nilai negatif" id="totalKeluar">Rp 0</div>
+  </div>
+  <div class="saldo-item">
+    <label>Saldo Bersih</label>
+    <div class="nilai" id="saldoProyek">Rp 0</div>
+  </div>
+</div>
+
+<!-- HITUNG MUNDUR LENGKAP -->
+<div style="background:linear-gradient(160deg,#0D1F16 0%,#1A3A2A 50%,#2D6A4F 100%);padding:20px 18px 18px;border-bottom:2px solid #F4A261">
+  <div style="color:#B7E4C7;font-size:10px;text-transform:uppercase;letter-spacing:3px;text-align:center;margin-bottom:14px">⏳ Waktu Tersisa Mengejar Mimpi</div>
+
+  <!-- 4 KOTAK COUNTDOWN -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(183,228,199,.2);border-radius:8px;padding:10px 4px;text-align:center">
+      <div id="cdHari" style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:#F4A261;line-height:1">365</div>
+      <div style="color:#8fbfa0;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px">Hari</div>
+    </div>
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(183,228,199,.2);border-radius:8px;padding:10px 4px;text-align:center">
+      <div id="cdJam" style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:#fff;line-height:1">00</div>
+      <div style="color:#8fbfa0;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px">Jam</div>
+    </div>
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(183,228,199,.2);border-radius:8px;padding:10px 4px;text-align:center">
+      <div id="cdMenit" style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:#fff;line-height:1">00</div>
+      <div style="color:#8fbfa0;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px">Menit</div>
+    </div>
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(183,228,199,.2);border-radius:8px;padding:10px 4px;text-align:center">
+      <div id="cdDetik" style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:#B7E4C7;line-height:1">00</div>
+      <div style="color:#8fbfa0;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px">Detik</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+      <span style="color:#8fbfa0;font-size:10px;text-transform:uppercase;letter-spacing:1px">Progress</span>
+      <span id="persen" style="color:#F4A261;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600">0%</span>
+    </div>
+    <div style="background:rgba(255,255,255,.1);border-radius:20px;height:6px;overflow:hidden">
+      <div id="progressBar" style="height:100%;background:linear-gradient(90deg,#40916C,#F4A261);border-radius:20px;width:0%;transition:width .5s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px">
+      <span id="tglMulaiLabel" style="color:#5a8a6a;font-size:9px"></span>
+      <span id="tglAkhirLabel" style="color:#5a8a6a;font-size:9px"></span>
+    </div>
+  </div>
+
+  <!-- KUTIPAN -->
+  <div style="text-align:center;color:#a8c8b4;font-size:12px;font-style:italic;border-top:1px solid rgba(255,255,255,.08);padding-top:10px">
+    "Setiap detik yang berlalu adalah selangkah lebih dekat ke mimpi" 🌿
+  </div>
+</div>
+
+<!-- FORM INPUT -->
+<div class="form-section">
+  <div class="form-header"><span>＋</span> Tambah Catatan</div>
+  <div class="form-body">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="field-label">Hari Ke-</label>
+        <input type="number" id="inpHari" min="1" value="1" placeholder="1">
+      </div>
+      <div class="form-group">
+        <label class="field-label">Jenis Catatan</label>
+        <select id="inpJenis">
+          <option value="proyek">🟢 Kegiatan Proyek</option>
+          <option value="saprodi">🟡 Belanja Saprodi</option>
+          <option value="pemasukan">🟩 Pemasukan</option>
+          <option value="pribadi">🔴 Pengeluaran Pribadi</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group full">
+      <label class="field-label">Uraian Kegiatan / Keterangan</label>
+      <textarea id="inpUraian" placeholder="Contoh: Pembelian pupuk urea 50 kg, atau Kegiatan pengolahan lahan..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="field-label">Jumlah (Rp)</label>
+        <input type="number" id="inpJumlah" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label class="field-label">Tipe Arus</label>
+        <select id="inpArus">
+          <option value="keluar">⬇ Pengeluaran</option>
+          <option value="masuk">⬆ Pemasukan</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-tambah" onclick="tambahEntri()">+ Simpan Catatan</button>
+  </div>
+</div>
+
+<!-- FILTER HARI -->
+<div class="filter-bar" id="filterBar">
+  <div class="chip aktif" onclick="filterHari(0, this)">Semua</div>
+</div>
+
+<!-- TABEL LOG -->
+<div class="tabel-wrap">
+  <div class="tabel-head">
+    <div>Hari</div>
+    <div>Uraian</div>
+    <div>Saprodi</div>
+    <div>Pemasukan</div>
+    <div>Pengeluaran</div>
+    <div></div>
+  </div>
+  <div class="tbody" id="tbody">
+    <div class="kosong">Belum ada catatan. Mulai tambahkan dari form di atas.</div>
+  </div>
+</div>
+
+<!-- REKAPITULASI -->
+<div class="rekap-section">
+  <div class="rekap-header">📊 Rekapitulasi Perjalanan Borneo</div>
+  <div class="rekap-body">
+    <div class="rekap-cell">
+      <label>Pengeluaran Proyek</label>
+      <div class="angka" id="rKelProyek" style="color:#c0392b">Rp 0</div>
+    </div>
+    <div class="rekap-cell">
+      <label>Belanja Saprodi</label>
+      <div class="angka" id="rSaprodi" style="color:#e67e22">Rp 0</div>
+    </div>
+    <div class="rekap-cell">
+      <label>Pengeluaran Pribadi</label>
+      <div class="angka" id="rPribadi" style="color:#e74c3c">Rp 0</div>
+    </div>
+    <div class="rekap-cell">
+      <label>Total Pemasukan</label>
+      <div class="angka" id="rMasuk" style="color:#27ae60">Rp 0</div>
+    </div>
+  </div>
+  <div class="saldo-akhir">
+    <label>Saldo Bersih (Proyek)</label>
+    <div class="angka" id="rSaldo">Rp 0</div>
+  </div>
+</div>
+
+<!-- EXPORT -->
+<button class="btn-export" onclick="exportCSV()">⬇ Export Catatan (.csv)</button>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+let data = JSON.parse(localStorage.getItem('btnlog') || '[]');
+let filterAktif = 0; // 0 = semua
+
+// ─── TANGGAL MULAI = BESOK ───────────────────────────────
+const mulai = new Date();
+mulai.setDate(mulai.getDate() + 1);
+mulai.setHours(0,0,0,0);
+
+function tglDariHari(h) {
+  const d = new Date(mulai);
+  d.setDate(d.getDate() + (h - 1));
+  return d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+// ─── RUPIAH FORMAT ──────────────────────────────────────
+function rp(n) {
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+
+// ─── SIMPAN ─────────────────────────────────────────────
+function simpan() {
+  localStorage.setItem('btnlog', JSON.stringify(data));
+}
+
+// ─── TAMBAH ─────────────────────────────────────────────
+function tambahEntri() {
+  const hari   = parseInt(document.getElementById('inpHari').value) || 1;
+  const jenis  = document.getElementById('inpJenis').value;
+  const uraian = document.getElementById('inpUraian').value.trim();
+  const jumlah = parseFloat(document.getElementById('inpJumlah').value) || 0;
+  const arus   = document.getElementById('inpArus').value;
+
+  if (!uraian) { alert('Mohon isi uraian kegiatan.'); return; }
+  if (jumlah < 0) { alert('Jumlah tidak boleh negatif.'); return; }
+
+  data.push({ id: Date.now(), hari, jenis, uraian, jumlah, arus });
+  simpan();
+  render();
+
+  // reset form
+  document.getElementById('inpUraian').value = '';
+  document.getElementById('inpJumlah').value = '';
+}
+
+// ─── HAPUS ──────────────────────────────────────────────
+function hapus(id) {
+  if (!confirm('Hapus catatan ini?')) return;
+  data = data.filter(d => d.id !== id);
+  simpan();
+  render();
+}
+
+// ─── FILTER ─────────────────────────────────────────────
+function filterHari(h, el) {
+  filterAktif = h;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('aktif'));
+  el.classList.add('aktif');
+  render();
+}
+
+// ─── RENDER ─────────────────────────────────────────────
+function render() {
+  const tampil = filterAktif === 0 ? data : data.filter(d => d.hari === filterAktif);
+  const tbody  = document.getElementById('tbody');
+
+  // rebuild filter chips
+  const hariList = [...new Set(data.map(d => d.hari))].sort((a,b)=>a-b);
+  const fb = document.getElementById('filterBar');
+  fb.innerHTML = `<div class="chip ${filterAktif===0?'aktif':''}" onclick="filterHari(0,this)">Semua</div>`;
+  hariList.forEach(h => {
+    const aktif = filterAktif === h ? 'aktif' : '';
+    fb.innerHTML += `<div class="chip ${aktif}" onclick="filterHari(${h},this)">Hari ${h}</div>`;
+  });
+
+  // update badge hari terakhir
+  const maxHari = hariList.length ? Math.max(...hariList) : 1;
+  document.getElementById('badgeHari').textContent = `Hari ke-${maxHari}`;
+
+  // baris tabel
+  if (!tampil.length) {
+    tbody.innerHTML = '<div class="kosong">Belum ada catatan untuk filter ini.</div>';
+  } else {
+    const sorted = [...tampil].sort((a,b) => a.hari - b.hari || a.id - b.id);
+    tbody.innerHTML = sorted.map(d => {
+      const dot   = `<span class="jenis-dot dot-${d.jenis}"></span>`;
+      const isSaprodi  = d.jenis === 'saprodi';
+      const isPemasukan= d.jenis === 'pemasukan' || d.arus === 'masuk';
+      const saprodiVal = isSaprodi  ? `<span class="nominal keluar">${rp(d.jumlah)}</span>` : '—';
+      const masukVal   = isPemasukan && d.arus === 'masuk' ? `<span class="nominal masuk">${rp(d.jumlah)}</span>` : '—';
+      const keluarVal  = d.arus === 'keluar' ? `<span class="nominal keluar">${rp(d.jumlah)}</span>` : '—';
+      const jLabel = { proyek:'Proyek', saprodi:'Saprodi', pemasukan:'Pemasukan', pribadi:'Pribadi' }[d.jenis];
+      return `
+        <div class="row-item">
+          <div style="font-family:var(--mono);font-size:12px;color:var(--hijau-mid)">
+            H-${d.hari}<br><span style="color:#aaa;font-size:10px">${tglDariHari(d.hari).split(' ')[0]} ${tglDariHari(d.hari).split(' ')[1]}</span>
+          </div>
+          <div>${dot}<strong style="font-size:11px;color:#888">[${jLabel}]</strong><br>${d.uraian}</div>
+          <div>${saprodiVal}</div>
+          <div>${masukVal}</div>
+          <div>${keluarVal}</div>
+          <div><button class="btn-hapus" onclick="hapus(${d.id})">✕</button></div>
+        </div>`;
+    }).join('');
+  }
+
+  // kalkulasi
+  const totalMasuk   = data.filter(d => d.arus === 'masuk').reduce((s,d) => s+d.jumlah, 0);
+  const totalSaprodi = data.filter(d => d.jenis === 'saprodi').reduce((s,d) => s+d.jumlah, 0);
+  const totalProyek  = data.filter(d => d.jenis === 'proyek' && d.arus === 'keluar').reduce((s,d) => s+d.jumlah, 0);
+  const totalPribadi = data.filter(d => d.jenis === 'pribadi').reduce((s,d) => s+d.jumlah, 0);
+  const totalKeluar  = data.filter(d => d.arus === 'keluar').reduce((s,d) => s+d.jumlah, 0);
+  const saldo        = totalMasuk - (totalKeluar - totalPribadi);
+
+  document.getElementById('totalMasuk').textContent   = rp(totalMasuk);
+  document.getElementById('totalKeluar').textContent  = rp(totalKeluar);
+  document.getElementById('saldoProyek').textContent  = rp(saldo);
+  document.getElementById('saldoProyek').className    = 'nilai ' + (saldo >= 0 ? 'positif' : 'negatif');
+
+  document.getElementById('rKelProyek').textContent = rp(totalProyek);
+  document.getElementById('rSaprodi').textContent   = rp(totalSaprodi);
+  document.getElementById('rPribadi').textContent   = rp(totalPribadi);
+  document.getElementById('rMasuk').textContent     = rp(totalMasuk);
+  document.getElementById('rSaldo').textContent     = rp(saldo);
+}
+
+// ─── EXPORT CSV ─────────────────────────────────────────
+function exportCSV() {
+  const header = ['Hari','Tanggal','Jenis','Uraian','Jumlah','Arus'];
+  const rows   = data.sort((a,b)=>a.hari-b.hari||a.id-b.id).map(d =>
+    [d.hari, tglDariHari(d.hari), d.jenis, `"${d.uraian}"`, d.jumlah, d.arus].join(',')
+  );
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Mengejar_Mimpi_Borneo_Log.csv`;
+  a.click();
+}
+
+// ─── HITUNG MUNDUR LENGKAP ───────────────────────────────
+const targetAkhir = new Date(mulai);
+targetAkhir.setFullYear(targetAkhir.getFullYear() + 1);
+
+const totalDurasi = targetAkhir - mulai;
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function updateCountdown() {
+  const now  = new Date();
+  const sisa = Math.max(0, targetAkhir - now);
+
+  const hari  = Math.floor(sisa / (1000*60*60*24));
+  const jam   = Math.floor((sisa % (1000*60*60*24)) / (1000*60*60));
+  const menit = Math.floor((sisa % (1000*60*60)) / (1000*60));
+  const detik = Math.floor((sisa % (1000*60)) / 1000);
+
+  const elH = document.getElementById('cdHari');
+  const elJ = document.getElementById('cdJam');
+  const elM = document.getElementById('cdMenit');
+  const elD = document.getElementById('cdDetik');
+  if (elH) elH.textContent = hari;
+  if (elJ) elJ.textContent = pad(jam);
+  if (elM) elM.textContent = pad(menit);
+  if (elD) elD.textContent = pad(detik);
+
+  // progress bar
+  const lewat = Math.max(0, now - mulai);
+  const pct   = Math.min(100, (lewat / totalDurasi) * 100).toFixed(1);
+  const pb  = document.getElementById('progressBar');
+  const pEl = document.getElementById('persen');
+  if (pb)  pb.style.width  = pct + '%';
+  if (pEl) pEl.textContent = pct + '%';
+
+  // label tanggal
+  const opt = { day:'2-digit', month:'short', year:'numeric' };
+  const ml  = document.getElementById('tglMulaiLabel');
+  const al  = document.getElementById('tglAkhirLabel');
+  if (ml) ml.textContent = mulai.toLocaleDateString('id-ID', opt);
+  if (al) al.textContent = targetAkhir.toLocaleDateString('id-ID', opt);
+
+  // badge hari ke-
+  const hariJalan = Math.floor(lewat / (1000*60*60*24)) + 1;
+  const badge = document.getElementById('badgeHari');
+  if (badge) badge.textContent = `Hari ke-${hariJalan}`;
+
+  if (sisa === 0) clearInterval(timerCD);
+}
+
+updateCountdown();
+const timerCD = setInterval(updateCountdown, 1000);
+
+// ─── INIT ────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
